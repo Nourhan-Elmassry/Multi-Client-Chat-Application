@@ -1,239 +1,163 @@
 # Multi-Client Chat Application
 
-## Project Overview
+A terminal-based real-time chat application built for a Computer Networks project. The system uses Python sockets for TCP communication and threads to support multiple connected clients at the same time.
 
-This project is a simple real-time chat application built with Python.
+## Project Objective
 
-The main idea is to have one server that can accept multiple clients at the same time. Each client can send messages, and the server broadcasts these messages to the other connected clients.
+The goal of this project is to demonstrate how a simple client-server chat system works using core networking concepts:
 
-The project uses Python's built-in `socket` library for network communication and the `threading` library to handle more than one client at the same time.
+- TCP socket communication.
+- One central server that accepts many clients.
+- A separate server thread for each connected client.
+- Message broadcasting from one client to the other clients.
+- Safe client disconnection without stopping the server.
 
-This project is designed to be simple and suitable for a Computer Networks course project. It does not use a GUI, database, external libraries, or advanced frameworks.
+## Assignment Requirements Coverage
 
-## Objective
+| Requirement | Implementation |
+| --- | --- |
+| Server handles multiple simultaneous connections | `server.py` creates a new thread for every accepted client. |
+| Client can send and receive messages | `client.py` has an input loop for sending and a background thread for receiving. |
+| Messages are broadcast to other clients | The server `broadcast()` function sends each message to all clients except the sender. |
+| Graceful exit | Clients can type `/exit`, and the server removes disconnected clients safely. |
 
-The objective of this project is to demonstrate how a real-time multi-client chat system works using basic networking concepts.
-
-The project focuses on:
-
-- Creating a TCP socket server.
-- Connecting multiple clients to the same server.
-- Handling every client using a separate thread.
-- Sending messages from one client to other clients.
-- Handling client exit or disconnection without stopping the server.
-
-## Technologies Used
+## Technologies
 
 - Python 3
-- `socket` library
-- `threading` library
-- Terminal / Command Line
-- UTF-8 encoding
+- `socket` from the Python standard library
+- `threading` from the Python standard library
+- Command Prompt, PowerShell, Windows Terminal, VS Code terminal, or PyCharm terminal
+- UTF-8 text encoding
 
-## Main Features
+No external packages are required.
 
-- The server can handle multiple clients at the same time.
-- Each connected client has its own thread on the server.
-- The client has a simple terminal interface.
-- Each client enters a username before joining the chat.
-- Messages are broadcasted to the other connected clients.
-- The sender does not receive the same message back.
-- Clients can leave using the `/exit` command.
-- The server keeps running even if one client disconnects.
-- The application supports both English and Arabic text using UTF-8.
-
-## Project Files
+## Project Structure
 
 ```text
-server.py   - starts the chat server and handles all connected clients
-client.py   - connects to the server and lets the user send and receive messages
-README.md   - contains the project explanation and demo steps
+.
+├── client.py
+├── server.py
+├── README.md
+└── docs/
+    ├── GITHUB_UPLOAD_STEPS.md
+    ├── RUN_AND_DEMO_GUIDE.md
+    ├── gamma-presentation-script.md
+    └── video-narration-script.md
 ```
 
-## Network Configuration
+## Network Settings
 
-Both `server.py` and `client.py` use the same host and port:
+Both files use the same local host and port:
 
 ```python
 HOST = "127.0.0.1"
 PORT = 5000
+ENCODING = "utf-8"
 ```
 
-`127.0.0.1` means the application runs locally on the same computer. This is useful for testing the project and recording the demo video.
+`127.0.0.1` means the program runs locally on the same machine. This is the easiest setup for testing and recording the project demo.
 
-## How the Server Works
+## How the Application Works
 
-The server starts by creating a TCP socket.
+The server starts a TCP socket, binds it to `127.0.0.1:5000`, and waits for incoming client connections. When a client connects, the server accepts the connection and creates a dedicated thread for that client.
 
-After that, it binds the socket to the host and port, then starts listening for client connections.
+Each client begins by sending a username. The server stores the client socket and username in a shared clients list. A lock is used around this list so that multiple threads do not update it at the same time.
 
-When a new client connects, the server accepts the connection and starts a new thread for that client.
+When a client sends a message, the server receives it and broadcasts it to all other connected clients. The sender does not receive a copy of their own message.
 
-Each thread is responsible for receiving messages from one client. This allows the server to keep listening to all clients at the same time.
-
-The server also stores all connected clients in a list. This list is used when the server needs to broadcast a message.
-
-## How the Client Works
-
-The client connects to the server using the same host and port.
-
-When the client starts, it asks the user to enter a username. This username is sent to the server and used when sending messages.
-
-The client uses a separate receiving thread to listen for incoming messages from the server.
-
-At the same time, the main part of the client program allows the user to type and send messages.
-
-This means the user can receive messages while typing, which makes the chat feel real-time.
-
-## How Broadcasting Works
-
-When a client sends a message, the server receives it first.
-
-Then the server uses the `broadcast` function to send this message to all other connected clients.
-
-The message is not sent back to the same client who wrote it.
-
-For example:
-
-```text
-Ahmad sends: Hello Sara
-```
-
-Sara receives:
-
-```text
-Ahmad: Hello Sara
-```
-
-This shows that the server is responsible for distributing messages between clients.
-
-## How Threading is Used
-
-Threading is important in this project because the server must handle more than one client at the same time.
-
-Without threading, the server might wait for one client and block the others.
-
-In this project, every client connection gets a separate thread. So if Ahmad sends a message and Sara is also connected, the server can still handle both clients independently.
-
-The client also uses a receiving thread, so it can receive messages from the server while the user is typing.
-
-## How Graceful Exit Works
-
-The client can leave the chat by typing:
-
-```text
-/exit
-```
-
-When a client exits, the connection is closed.
-
-The server detects this disconnection, removes the client from the active clients list, and keeps running normally.
-
-This is important because one disconnected client should not crash the whole server.
+The client also uses threading. One thread waits for messages from the server while the main program lets the user type and send messages. This makes the chat feel real-time because receiving and sending can happen at the same time.
 
 ## How to Run
 
-First, run the server:
+Open three terminal windows in the project folder.
+
+Terminal 1:
 
 ```bash
 python server.py
 ```
 
-Then open two different terminal windows and run the client in each one:
+Terminal 2:
 
 ```bash
 python client.py
 ```
 
-Use different usernames, for example:
-
-```text
-Ahmad
-Sara
-```
-
-To leave the chat, type:
-
-```text
-/exit
-```
-
-## Practical Demo with Ahmad and Sara
-
-1. Run the server:
+Terminal 3:
 
 ```bash
-python server.py
+python client.py
 ```
 
-2. Open the first client and enter:
+On Windows, if `python` is not recognized, use:
+
+```bash
+py server.py
+py client.py
+```
+
+Use different usernames, such as:
 
 ```text
 Ahmad
-```
-
-3. Open the second client and enter:
-
-```text
 Sara
 ```
 
-4. From Ahmad's terminal, send:
-
-```text
-Hello Sara
-```
-
-5. Sara should receive:
-
-```text
-Ahmad: Hello Sara
-```
-
-6. From Sara's terminal, send:
-
-```text
-Hi Ahmad
-```
-
-7. Ahmad should receive:
-
-```text
-Sara: Hi Ahmad
-```
-
-8. From Sara's terminal, type:
+To leave the chat from any client, type:
 
 ```text
 /exit
 ```
 
-9. The server should stay running, and Ahmad can remain connected.
+## Demo Scenario
 
-## Video Explanation Script
+1. Start the server.
+2. Start the first client and enter `Ahmad`.
+3. Start the second client and enter `Sara`.
+4. From Ahmad, send `Hello Sara`.
+5. Sara should receive `Ahmad: Hello Sara`.
+6. From Sara, send `Hi Ahmad`.
+7. Ahmad should receive `Sara: Hi Ahmad`.
+8. From Sara, type `/exit`.
+9. The server should keep running, and Ahmad should remain connected.
 
-Hello doctor, this is my Multi-Client Chat Application project.
+## Important Files
 
-The goal of this project is to build a simple real-time chat system using Python. The project uses the `socket` library for network communication and the `threading` library to allow multiple clients to connect at the same time.
+### `server.py`
 
-The project contains two main files. The first file is `server.py`, which starts the server, accepts client connections, creates a thread for each client, and broadcasts messages. The second file is `client.py`, which connects to the server and allows the user to send and receive messages from the terminal.
+Responsible for:
 
-First, I will run the server using `python server.py`. The server is now running on `127.0.0.1` and port `5000`, and it is waiting for clients.
+- Creating the TCP server socket.
+- Listening for clients.
+- Starting one thread per client.
+- Receiving messages from clients.
+- Broadcasting messages to all other connected clients.
+- Removing disconnected clients safely.
 
-Now I will open two clients. In the first client, I will use the username `Ahmad`. In the second client, I will use the username `Sara`.
+### `client.py`
 
-At this point, both clients are connected to the same server. The server created a separate thread for each client, so it can handle both clients at the same time.
+Responsible for:
 
-Now Ahmad will send a message: `Hello Sara`.
+- Connecting to the server.
+- Sending the username.
+- Sending messages typed by the user.
+- Receiving messages from the server in a background thread.
+- Leaving the chat with `/exit`.
 
-Sara receives the message as `Ahmad: Hello Sara`. This means the server received the message from Ahmad and broadcasted it to Sara.
+## Notes for the Project Video
 
-Now Sara will reply with `Hi Ahmad`.
+Useful materials for recording and presentation are included in the `docs` folder:
 
-Ahmad receives the message as `Sara: Hi Ahmad`.
+- `docs/gamma-presentation-script.md`: English presentation content for Gamma.
+- `docs/video-narration-script.md`: English speaking script that matches the presentation.
+- `docs/RUN_AND_DEMO_GUIDE.md`: Arabic run steps and demo scenario.
+- `docs/GITHUB_UPLOAD_STEPS.md`: Arabic guide for creating and uploading a new GitHub repository.
 
-An important point is that the message is sent to the other clients only. The sender does not receive the same message back.
+## Possible Improvements
 
-Finally, I will test the exit feature. Sara types `/exit` to leave the chat. The server detects that Sara disconnected, removes her from the clients list, and continues running normally.
-
-This project demonstrates the main networking requirements: socket programming, multiple clients, threading, broadcasting, and safe disconnection handling.
+- Add a graphical user interface.
+- Add private messages between specific users.
+- Add chat rooms.
+- Save chat history to a file or database.
+- Add authentication for usernames.
+- Support running the server on another device in the same network.
