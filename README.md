@@ -37,12 +37,7 @@ No external packages are required.
 .
 ├── client.py
 ├── server.py
-├── README.md
-└── docs/
-    ├── GITHUB_UPLOAD_STEPS.md
-    ├── RUN_AND_DEMO_GUIDE.md
-    ├── gamma-presentation-script.md
-    └── video-narration-script.md
+└── README.md
 ```
 
 ## Network Settings
@@ -143,15 +138,6 @@ Responsible for:
 - Sending messages typed by the user.
 - Receiving messages from the server in a background thread.
 - Leaving the chat with `/exit`.
-
-## Notes for the Project Video
-
-Useful materials for recording and presentation are included in the `docs` folder:
-
-- `docs/gamma-presentation-script.md`: English presentation content for Gamma.
-- `docs/video-narration-script.md`: English speaking script that matches the presentation.
-- `docs/RUN_AND_DEMO_GUIDE.md`: Arabic run steps and demo scenario.
-- `docs/GITHUB_UPLOAD_STEPS.md`: Arabic guide for creating and uploading a new GitHub repository.
 
 ## Possible Improvements
 
