@@ -95,7 +95,7 @@ Use different usernames, such as:
 
 ```text
 Ahmad
-Sara
+Nourhan
 ```
 
 To leave the chat from any client, type:
