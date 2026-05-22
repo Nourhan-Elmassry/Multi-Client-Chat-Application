@@ -24,6 +24,9 @@ htmlcov/
 # Logs
 *.log
 
+# Local presentation and video scripts
+docs/
+
 # Editor and operating system files
 .vscode/
 .idea/
