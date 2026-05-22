@@ -35,9 +35,9 @@ No external packages are required.
 
 ```text
 .
-├── client.py
-├── server.py
-└── README.md
+|-- client.py
+|-- server.py
+`-- README.md
 ```
 
 ## Network Settings
@@ -61,6 +61,56 @@ Each client begins by sending a username. The server stores the client socket an
 When a client sends a message, the server receives it and broadcasts it to all other connected clients. The sender does not receive a copy of their own message.
 
 The client also uses threading. One thread waits for messages from the server while the main program lets the user type and send messages. This makes the chat feel real-time because receiving and sending can happen at the same time.
+
+## Application Flow Diagrams
+
+The following diagrams summarize the project workflow from both the server side and the client side.
+
+### Overall Message Flow
+
+```mermaid
+flowchart LR
+    A["Client Ahmad"] -->|"Sends message"| S["Chat Server"]
+    N["Client Nourhan"] -->|"Sends message"| S
+    S -->|"Broadcasts Ahmad's message"| N
+    S -->|"Broadcasts Nourhan's message"| A
+```
+
+### Server-Side Flow
+
+```mermaid
+flowchart TD
+    S1["Run server.py"] --> S2["Create TCP socket"]
+    S2 --> S3["Bind to 127.0.0.1:5000"]
+    S3 --> S4["Listen for clients"]
+    S4 --> S5["Accept new client connection"]
+    S5 --> S6["Start a separate thread for the client"]
+    S6 --> S7["Read username and store client information"]
+    S7 --> S8["Wait for messages from this client"]
+    S8 --> S9{"Message received?"}
+    S9 -->|"Yes"| S10["Broadcast message to other clients"]
+    S10 --> S8
+    S9 -->|"No or disconnected"| S11["Remove client and close socket"]
+    S11 --> S4
+```
+
+### Client-Side Flow
+
+```mermaid
+flowchart TD
+    C1["Run client.py"] --> C2["Create client socket"]
+    C2 --> C3["Connect to server on 127.0.0.1:5000"]
+    C3 --> C4["Enter username"]
+    C4 --> C5["Send username to server"]
+    C5 --> C6["Start receiving thread"]
+    C6 --> C7["Main thread waits for user input"]
+    C7 --> C8{"User types /exit?"}
+    C8 -->|"No"| C9["Send message to server"]
+    C9 --> C7
+    C8 -->|"Yes"| C10["Close connection and leave chat"]
+    C6 --> C11["Receive broadcast messages from server"]
+    C11 --> C6
+```
 
 ## How to Run
 
