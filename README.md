@@ -108,12 +108,12 @@ To leave the chat from any client, type:
 
 1. Start the server.
 2. Start the first client and enter `Ahmad`.
-3. Start the second client and enter `Sara`.
-4. From Ahmad, send `Hello Sara`.
-5. Sara should receive `Ahmad: Hello Sara`.
-6. From Sara, send `Hi Ahmad`.
-7. Ahmad should receive `Sara: Hi Ahmad`.
-8. From Sara, type `/exit`.
+3. Start the second client and enter `Nourhan`.
+4. From Ahmad, send `Hello Nourhan`.
+5. Nourhan should receive `Ahmad: Hello Nourhan`.
+6. From Nourhan, send `Hi Ahmad`.
+7. Ahmad should receive `Nourhan: Hi Ahmad`.
+8. From Nourhan, type `/exit`.
 9. The server should keep running, and Ahmad should remain connected.
 
 ## Important Files
